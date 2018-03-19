@@ -7,26 +7,29 @@ import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
 
+import javax.lang.model.element.QualifiedNameable;
+
 import adaline.AdalineNaoLinear;
 import adaline.Adaline;
 import normaliza.Normalizar;
 
 public class Principal {
-	static ArrayList<Double> dados;
+	public static ArrayList<Double> dados;
 
 	public static void main(String[] args) {
 		dados = new ArrayList<Double>();
 		leituraDeArquivo();
 		// janela de teste e treino
-		int colunas = 12;
+		int colunas = 4;
 		int linhas = 100;
 		int tamanhoDaTeste = 30;// ira subtrair da linhas
 		double taxaDeAprendizado = 0.3;
 		int interacoes = 100;
-		int nErro = 3;
+		int nErro = 2;
 		double base[][] = new double[linhas][colunas];
 		double respostas[] = new double[linhas];
-
+		double erroMedioQuadraticoTreino[] = new double[4];
+		double erroMedioQuadraticoTeste[] = new double[4];
 		// recebendos os dados
 		for (int i = 0; i < base.length; i++) {
 			for (int j = 0; j < base[0].length; j++) {
@@ -34,12 +37,7 @@ public class Principal {
 			}
 			respostas[i] = dados.get(base[0].length + i);
 		}
-		/*
-		 * for (int i = 0; i < respostas.length; i++) {
-		 * System.out.print("f(u) -->["); for (int j = 0; j < base[0].length;
-		 * j++) { System.out.print(base[i][j]+", "); }
-		 * System.out.println("] y --> "+respostas[i]); } System.out.println();
-		 */
+		
 		double[][] baseNormalizada = Normalizar.normalizandoBase2(respostas, base);
 		double[] respostasNormalizada = Normalizar.normalizandoResposta(respostas, base);
 		Adaline a = new Adaline();
@@ -51,19 +49,19 @@ public class Principal {
 		for (int i = 0; i < a.respObitidaTreino.length; i++) {
 			respObitida[i] = Normalizar.desnormalizando(respostas, base, a.respObitidaTreino[i]);
 			erros[cont] = respostas[cont] - respObitida[i];
-			// System.out.println(respostas[cont]+" "+respObitida[i]+"
-			// e-->"+erros[cont]);
+			erroMedioQuadraticoTreino[0] += Math.pow(erros[cont],2);
 			cont++;
 		}
+		erroMedioQuadraticoTreino[0] = erroMedioQuadraticoTreino[0] / (baseNormalizada.length - tamanhoDaTeste);
+		
 		double[] respObitida2 = new double[a.respObitidaTeste.length];
 		for (int i = 0; i < a.respObitidaTeste.length; i++) {
 			respObitida2[i] = Normalizar.desnormalizando(respostas, base, a.respObitidaTeste[i]);
 			erros[cont] = respostas[cont] - respObitida2[i];
-			// System.out.println(respostas[cont]+" "+respObitida2[i]+"
-			// e-->"+erros[cont]);
+			erroMedioQuadraticoTeste[0] += Math.pow(erros[cont],2);
 			cont++;
 		}
-
+		erroMedioQuadraticoTeste[0] = erroMedioQuadraticoTeste[0] / tamanhoDaTeste;
 		new Grafico().mostrar(respostas, respObitida, respObitida2, "Adaline");
 
 		// --------------------------AL_PARA_ANL---------------------------------------------------
@@ -83,20 +81,9 @@ public class Principal {
 
 		}
 
-		/*
-		 * for (int i = 0; i < base2.length; i++) { for (int k = 0; k <
-		 * base2[0].length; k++) { System.out.print(base2[i][k]+" "); }
-		 * System.out.println(" y -->"+respostas2[i]); } System.out.println();
-		 */
 		double base2Normalizada[][] = Normalizar.normalizandoBase2(respostas2, base2);
 		double respostas2Normalizada[] = Normalizar.normalizandoResposta(respostas2, base2);
-		/*
-		 * for (int i = 0; i < base2Normalizada.length; i++) { for (int k = 0; k
-		 * < base2Normalizada[0].length; k++) {
-		 * System.out.print(base2Normalizada[i][k]+" "); }
-		 * System.out.println(" y -->"+respostas2Normalizada[i]); }
-		 * System.out.println();
-		 */
+
 		// --------------------------------------------------------------
 		AdalineNaoLinear b = new AdalineNaoLinear();
 		b.executar(base2Normalizada, respostas2Normalizada, tamanhoDaTeste, taxaDeAprendizado, interacoes);
@@ -107,18 +94,18 @@ public class Principal {
 		for (int i = 0; i < b.respObitidaTreino.length; i++) {
 			respObitida3[i] = Normalizar.desnormalizando(respostas2, base2, b.respObitidaTreino[i]);
 			erros2[cont] = respostas2[cont] - respObitida3[i];
-			// System.out.println(respostas2[cont]+" "+respObitida3[i]+"
-			// e-->"+erros2[cont]);
+			erroMedioQuadraticoTreino[1] += Math.pow(erros2[cont],2);
 			cont++;
 		}
+		erroMedioQuadraticoTreino[1] = erroMedioQuadraticoTreino[1] / (baseNormalizada.length - tamanhoDaTeste);
 		double[] respObitida4 = new double[b.respObitidaTeste.length];
 		for (int i = 0; i < b.respObitidaTeste.length; i++) {
 			respObitida4[i] = Normalizar.desnormalizando(respostas2, base2, b.respObitidaTeste[i]);
 			erros2[cont] = respostas2[cont] - respObitida4[i];
-			// System.out.println(respostas2[cont]+" "+respObitida4[i]+"
-			// e-->"+erros2[cont]);
+			erroMedioQuadraticoTeste[1] += Math.pow(erros2[cont],2);
 			cont++;
 		}
+		erroMedioQuadraticoTeste[1] = erroMedioQuadraticoTeste[1] / tamanhoDaTeste;
 		new Grafico().mostrar(respostas2, respObitida3, respObitida4, "AL_Para_ANL");
 
 		// ------------------------------------------------------------------------------------------------------
@@ -131,18 +118,18 @@ public class Principal {
 		for (int i = 0; i < c.respObitidaTreino.length; i++) {
 			respObitida[i] = Normalizar.desnormalizando(respostas, base, c.respObitidaTreino[i]);
 			erros[cont] = respostas[cont] - respObitida[i];
-			// System.out.println(respostas[cont]+" "+respObitida[i]+"
-			// e-->"+erros[cont]);
+			erroMedioQuadraticoTreino[2] += Math.pow(erros[cont],2);
 			cont++;
 		}
+		erroMedioQuadraticoTreino[2] = erroMedioQuadraticoTreino[2] / (baseNormalizada.length - tamanhoDaTeste);
 		respObitida2 = new double[c.respObitidaTeste.length];
 		for (int i = 0; i < c.respObitidaTeste.length; i++) {
 			respObitida2[i] = Normalizar.desnormalizando(respostas, base, c.respObitidaTeste[i]);
 			erros[cont] = respostas[cont] - respObitida2[i];
-			// System.out.println(respostas[cont]+" "+respObitida2[i]+"
-			// e-->"+erros[cont]);
+			erroMedioQuadraticoTeste[2] += Math.pow(erros[cont],2);
 			cont++;
 		}
+		erroMedioQuadraticoTeste[2] = erroMedioQuadraticoTeste[2] / tamanhoDaTeste;
 
 		new Grafico().mostrar(respostas, respObitida, respObitida2, "Adaline Não linear");
 
@@ -173,25 +160,29 @@ public class Principal {
 		for (int i = 0; i < d.respObitidaTreino.length; i++) {
 			respObitida3[i] = Normalizar.desnormalizando(respostas2, base2, d.respObitidaTreino[i]);
 			erros2[cont] = respostas2[cont] - respObitida3[i];
-			System.out.println(respostas2[cont]+" "+respObitida3[i]+"e-->"+erros2[cont]);
+			erroMedioQuadraticoTreino[3] += Math.pow(erros2[cont],2);
 			cont++;
 		}
+		erroMedioQuadraticoTreino[3] = erroMedioQuadraticoTreino[3] / (baseNormalizada.length - tamanhoDaTeste);
+		
 		respObitida4 = new double[d.respObitidaTeste.length];
 		for (int i = 0; i < d.respObitidaTeste.length; i++) {
 			respObitida4[i] = Normalizar.desnormalizando(respostas2, base2, d.respObitidaTeste[i]);
 			erros2[cont] = respostas2[cont] - respObitida4[i];
-			System.out.println(respostas2[cont]+" "+respObitida4[i]+"e-->"+erros2[cont]);
+			erroMedioQuadraticoTeste[3] += Math.pow(erros2[cont],2);
 			cont++;
 		}
+		erroMedioQuadraticoTeste[3] = erroMedioQuadraticoTeste[3] / tamanhoDaTeste;
 		new Grafico().mostrar(respostas2, respObitida3, respObitida4, "ANL_Para_AL");
-		System.out.println(a.erroMedioQuadraticoTreino);
-		System.out.println(b.erroMedioQuadraticoTreino);
-		System.out.println(c.erroMedioQuadraticoTreino);
-		System.out.println(d.erroMedioQuadraticoTreino);
-		System.out.println(a.erroMedioQuadraticoTeste);
-		System.out.println(b.erroMedioQuadraticoTeste);
-		System.out.println(c.erroMedioQuadraticoTeste);
-		System.out.println(d.erroMedioQuadraticoTeste);
+		System.out.println("erroMedioQuadraticoTreino  "+erroMedioQuadraticoTreino[0]);
+		System.out.println("erroMedioQuadraticoTreino  "+erroMedioQuadraticoTreino[1]);
+		System.out.println("erroMedioQuadraticoTreino  "+erroMedioQuadraticoTreino[2]);
+		System.out.println("erroMedioQuadraticoTreino  "+erroMedioQuadraticoTreino[3]);
+		System.out.println("___________________________");
+		System.out.println("erroMedioQuadraticoTeste  "+erroMedioQuadraticoTeste[0]);
+		System.out.println("erroMedioQuadraticoTeste  "+erroMedioQuadraticoTeste[1]);
+		System.out.println("erroMedioQuadraticoTeste  "+erroMedioQuadraticoTeste[2]);
+		System.out.println("erroMedioQuadraticoTeste  "+erroMedioQuadraticoTeste[3]);
 	}
 
 	public static void leituraDeArquivo() {
@@ -201,7 +192,7 @@ public class Principal {
 
 		try {
 
-			String path = Principal.class.getResource("/base/airlines.txt").getPath();
+			String path = Principal.class.getResource("/base/education.txt").getPath();
 			br = new BufferedReader(new FileReader(path));
 			int aux = 0;
 			String linha = null;

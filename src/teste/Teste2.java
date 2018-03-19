@@ -1,25 +1,25 @@
-package adaline;
+package teste;
 
 import java.util.Random;
 
 import normaliza.Normalizar;
 
-public class Adaline {
+public class Teste2 {
 	public double[] respObitidaTreino;
-	public double[] respObitidaTeste;
 	public double erroMedioQuadraticoTreino = 0.0;
 	public double erroMedioQuadraticoTeste = 0.0;
 	Random random = new Random();
+	double bias;
+	double[] pesos;
 
-	public void executar(double[][] baseNormalizada, double[] respostaNormalizada, int nTeste, double n,
-			int interacoes) {
-		double bias = random.nextFloat();
-		double[] pesos = new double[baseNormalizada[0].length];
+	public void treino(double[][] baseNormalizada, double[] respostaNormalizada, int nTeste, double n, int interacoes) {
+		bias = random.nextFloat();
+		pesos = new double[baseNormalizada[0].length];
 		for (int i = 0; i < pesos.length; i++) {
 			pesos[i] = random.nextFloat();
 		}
 		respObitidaTreino = new double[baseNormalizada.length - nTeste];
-		respObitidaTeste = new double[nTeste];
+		
 
 		double saida = 0;
 		int i = 0;
@@ -49,18 +49,11 @@ public class Adaline {
 
 				erroMedioQuadraticoTreino += Math.pow(erro, 2);
 
-				/*
-				 * System.out.print("i -->" + i + " y-->" +
-				 * respostaNormalizada[i]+" x["); for (int k = 0; k <
-				 * baseNormalizada[0].length; k++) {
-				 * System.out.print(baseNormalizada[i][k]+" "); }
-				 * System.out.println("]");
-				 */
 			}
 
 			erroMedioQuadraticoTreino = erroMedioQuadraticoTreino / (baseNormalizada.length - nTeste);
 
-			System.out.println(erroMedioQuadraticoTreino);
+			// System.out.println(erroMedioQuadratico);
 			count++;
 		}
 		// treino
@@ -74,19 +67,15 @@ public class Adaline {
 
 		}
 
+	}
+
+	public double teste(double[] baseNormalizada) {
 		// teste
-		int cont = 0;
-		for (int k = (baseNormalizada.length - nTeste); k < respostaNormalizada.length; k++) {
-			saida = 0;
-			for (int k2 = 0; k2 < baseNormalizada[0].length; k2++) {
-				saida += baseNormalizada[k][k2] * pesos[k2];
-			}
-			saida += bias;
-			respObitidaTeste[cont] = saida;
-			
-			erroMedioQuadraticoTeste += Math.pow((respostaNormalizada[cont]-saida), 2);
-			cont++;
-			
-		}erroMedioQuadraticoTeste = erroMedioQuadraticoTeste / nTeste;
+		double saida = 0;
+		for (int k2 = 0; k2 < baseNormalizada.length; k2++) {
+			saida += baseNormalizada[k2] * pesos[k2];
+		}
+		saida += bias;
+		return saida;
 	}
 }
