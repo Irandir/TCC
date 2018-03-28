@@ -20,10 +20,10 @@ public class Principal {
 		dados = new ArrayList<Double>();
 		leituraDeArquivo();
 		// janela de teste e treino
-		int colunas = 4;
-		int linhas = 100;
+		int colunas = 3;
+		int linhas = 279;
 		int tamanhoDaTeste = 30;// ira subtrair da linhas
-		double taxaDeAprendizado = 0.3;
+		double taxaDeAprendizado = 0.03;
 		int interacoes = 100;
 		int nErro = 2;
 		double base[][] = new double[linhas][colunas];
