@@ -23,13 +23,25 @@ public class Principal {
 		int colunas = 3;
 		int linhas = 279;
 		int tamanhoDaTeste = 30;// ira subtrair da linhas
-		double taxaDeAprendizado = 0.03;
-		int interacoes = 100;
-		int nErro = 2;
+		double taxaDeAprendizado = 0.02;
+		int interacoes = 1000;
+		int nErro = 3;
+	
+		/*	int colunas = 12;
+		int linhas = 132;
+		int tamanhoDaTeste = 30;// ira subtrair da linhas
+		double taxaDeAprendizado = 0.3;*/
+		
+		
 		double base[][] = new double[linhas][colunas];
 		double respostas[] = new double[linhas];
 		double erroMedioQuadraticoTreino[] = new double[4];
 		double erroMedioQuadraticoTeste[] = new double[4];
+		double erros[] = new double[linhas];
+		int cont = 0;
+		double base2[][] = new double[linhas - nErro][colunas + nErro];
+		double respostas2[] = new double[linhas - nErro];
+		
 		// recebendos os dados
 		for (int i = 0; i < base.length; i++) {
 			for (int j = 0; j < base[0].length; j++) {
@@ -40,12 +52,12 @@ public class Principal {
 		
 		double[][] baseNormalizada = Normalizar.normalizandoBase2(respostas, base);
 		double[] respostasNormalizada = Normalizar.normalizandoResposta(respostas, base);
+		
 		Adaline a = new Adaline();
 		a.executar(baseNormalizada, respostasNormalizada, tamanhoDaTeste, taxaDeAprendizado, interacoes);
 
-		double erros[] = new double[linhas];
-		int cont = 0;
 		double[] respObitida = new double[a.respObitidaTreino.length];
+		
 		for (int i = 0; i < a.respObitidaTreino.length; i++) {
 			respObitida[i] = Normalizar.desnormalizando(respostas, base, a.respObitidaTreino[i]);
 			erros[cont] = respostas[cont] - respObitida[i];
@@ -62,13 +74,13 @@ public class Principal {
 			cont++;
 		}
 		erroMedioQuadraticoTeste[0] = erroMedioQuadraticoTeste[0] / tamanhoDaTeste;
+		
 		new Grafico().mostrar(respostas, respObitida, respObitida2, "Adaline");
 
 		// --------------------------AL_PARA_ANL---------------------------------------------------
-		double base2[][] = new double[linhas - nErro][colunas + nErro];
+
 		cont = 0;
 		int j = 0;
-		double respostas2[] = new double[linhas - nErro];
 		for (int i = nErro; i < base.length; i++) {
 			for (j = 0; j < base[0].length; j++) {
 				base2[cont][j] = base[i][j];
@@ -78,7 +90,6 @@ public class Principal {
 			}
 			respostas2[cont] = respostas[i];
 			cont++;
-
 		}
 
 		double base2Normalizada[][] = Normalizar.normalizandoBase2(respostas2, base2);
@@ -86,7 +97,7 @@ public class Principal {
 
 		// --------------------------------------------------------------
 		AdalineNaoLinear b = new AdalineNaoLinear();
-		b.executar(base2Normalizada, respostas2Normalizada, tamanhoDaTeste, taxaDeAprendizado, interacoes);
+		b.executar(base2Normalizada, respostas2Normalizada, tamanhoDaTeste, 0.5, interacoes);
 
 		double erros2[] = new double[linhas - nErro];
 		cont = 0;
@@ -107,10 +118,10 @@ public class Principal {
 		}
 		erroMedioQuadraticoTeste[1] = erroMedioQuadraticoTeste[1] / tamanhoDaTeste;
 		new Grafico().mostrar(respostas2, respObitida3, respObitida4, "AL_Para_ANL");
-
+		
 		// ------------------------------------------------------------------------------------------------------
 		AdalineNaoLinear c = new AdalineNaoLinear();
-		c.executar(baseNormalizada, respostasNormalizada, tamanhoDaTeste, taxaDeAprendizado, interacoes);
+		c.executar(baseNormalizada, respostasNormalizada, tamanhoDaTeste, 0.5, interacoes);
 
 		erros = new double[linhas];
 		cont = 0;

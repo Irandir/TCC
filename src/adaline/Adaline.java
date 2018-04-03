@@ -60,7 +60,7 @@ public class Adaline {
 
 			erroMedioQuadraticoTreino = erroMedioQuadraticoTreino / (baseNormalizada.length - nTeste);
 
-			System.out.println(erroMedioQuadraticoTreino);
+			//System.out.println(erroMedioQuadraticoTreino);
 			count++;
 		}
 		// treino
@@ -84,7 +84,7 @@ public class Adaline {
 			saida += bias;
 			respObitidaTeste[cont] = saida;
 			
-			erroMedioQuadraticoTeste += Math.pow((respostaNormalizada[cont]-saida), 2);
+			erroMedioQuadraticoTeste += Math.pow((respostaNormalizada[k]-saida), 2);
 			cont++;
 			
 		}erroMedioQuadraticoTeste = erroMedioQuadraticoTeste / nTeste;

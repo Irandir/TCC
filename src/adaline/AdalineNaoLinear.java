@@ -40,7 +40,7 @@ public class AdalineNaoLinear {
 				saida = sigmoide(saida);
 				erro = respostaNormalizada[i] - saida;
 
-				bias = bias + n * erro;
+				bias = bias + n * erro * saida * (1 - saida);
 
 				for (j = 0; j < pesos.length; j++) {
 					pesos[j] = pesos[j] + baseNormalizada[i][j] * n * erro * saida * (1 - saida);
@@ -57,7 +57,7 @@ public class AdalineNaoLinear {
 			
 			erroMedioQuadraticoTreino = erroMedioQuadraticoTreino / (baseNormalizada.length - nTeste);
 
-			// System.out.println(erroMedioQuadratico);
+			System.out.println(erroMedioQuadraticoTreino);
 			count++;
 		}
 		//treino
@@ -69,6 +69,7 @@ public class AdalineNaoLinear {
 			saida += bias;
 			saida = sigmoide(saida);
 			respObitidaTreino[i] = saida;
+			
 		}
 		
 		//teste
@@ -81,7 +82,7 @@ public class AdalineNaoLinear {
 			saida += bias;
 			saida = sigmoide(saida);
 			respObitidaTeste[cont] = saida;
-			erroMedioQuadraticoTeste += Math.pow((respostaNormalizada[cont]-saida), 2);
+			erroMedioQuadraticoTeste += Math.pow((respostaNormalizada[k]-saida), 2);
 			cont++;
 			
 		}erroMedioQuadraticoTeste = erroMedioQuadraticoTeste / nTeste;
