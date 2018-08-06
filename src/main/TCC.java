@@ -13,16 +13,16 @@ import adaline.AdalineNaoLinear;
 import adaline.Adaline;
 import normaliza.Normalizar;
 
-public class Principal {
+public class TCC {
 	public static ArrayList<Double> dados;
 
 	public static void main(String[] args) {
 		dados = new ArrayList<Double>();
 		leituraDeArquivo();
 		// janela de teste e treino
-		int colunas = 3;
-		int linhas = 279;
-		int tamanhoDaTeste = 30;// ira subtrair da linhas
+		int colunas = 6;
+		int linhas = 43-colunas;
+		int tamanhoDaTeste = 10;// ira subtrair da linhas
 		double taxaDeAprendizado = 0.02;
 		int interacoes = 1000;
 		int nErro = 3;
@@ -185,15 +185,15 @@ public class Principal {
 		}
 		erroMedioQuadraticoTeste[3] = erroMedioQuadraticoTeste[3] / tamanhoDaTeste;
 		new Grafico().mostrar(respostas2, respObitida3, respObitida4, "ANL_Para_AL");
-		System.out.println("erroMedioQuadraticoTreino  "+erroMedioQuadraticoTreino[0]);
-		System.out.println("erroMedioQuadraticoTreino  "+erroMedioQuadraticoTreino[1]);
-		System.out.println("erroMedioQuadraticoTreino  "+erroMedioQuadraticoTreino[2]);
-		System.out.println("erroMedioQuadraticoTreino  "+erroMedioQuadraticoTreino[3]);
+		System.out.println("erroMedioQuadraticoTreino  Adaline linear "+erroMedioQuadraticoTreino[0]);
+		System.out.println("erroMedioQuadraticoTreino  AL_PARA_ANL  "+erroMedioQuadraticoTreino[1]);
+		System.out.println("erroMedioQuadraticoTreino Adaline Não linear "+erroMedioQuadraticoTreino[2]);
+		System.out.println("erroMedioQuadraticoTreino  ANL_PARA_AL "+erroMedioQuadraticoTreino[3]);
 		System.out.println("___________________________");
-		System.out.println("erroMedioQuadraticoTeste  "+erroMedioQuadraticoTeste[0]);
-		System.out.println("erroMedioQuadraticoTeste  "+erroMedioQuadraticoTeste[1]);
-		System.out.println("erroMedioQuadraticoTeste  "+erroMedioQuadraticoTeste[2]);
-		System.out.println("erroMedioQuadraticoTeste  "+erroMedioQuadraticoTeste[3]);
+		System.out.println("erroMedioQuadraticoTeste Adaline linear "+erroMedioQuadraticoTeste[0]);
+		System.out.println("erroMedioQuadraticoTeste  AL_PARA_ANL  "+erroMedioQuadraticoTeste[1]);
+		System.out.println("erroMedioQuadraticoTeste   Adaline Não linear"+erroMedioQuadraticoTeste[2]);
+		System.out.println("erroMedioQuadraticoTeste  ANL_PARA_AL "+erroMedioQuadraticoTeste[3]);
 	}
 
 	public static void leituraDeArquivo() {
@@ -203,12 +203,14 @@ public class Principal {
 
 		try {
 
-			String path = Principal.class.getResource("/base/education.txt").getPath();
+			String path = TCC.class.getResource("/base/15_24_des.txt").getPath();
 			br = new BufferedReader(new FileReader(path));
-			int aux = 0;
+			String aux = null;
 			String linha = null;
 			while ((linha = br.readLine()) != null) {
-				dados.add(Double.parseDouble(linha));
+				aux = linha.replaceAll(",", ".");
+				//System.out.println(aux);
+				dados.add(Double.parseDouble(aux));
 
 			}
 

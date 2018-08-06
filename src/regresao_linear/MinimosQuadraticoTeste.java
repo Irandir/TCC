@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Jama.Matrix;
-import main.Principal;
+import main.TCC;
 
 public class MinimosQuadraticoTeste {
 
@@ -16,8 +16,8 @@ public class MinimosQuadraticoTeste {
 
 	public static void main(String[] args) {
 		leituraDeArquivo();
-		int linhas = 100;
-		int colunas = 15;
+		int linhas = 38;
+		int colunas = 4;
 
 		double entradas[][] = new double[colunas][linhas];
 		double respostas[][] = new double[1][linhas];
@@ -66,7 +66,7 @@ public class MinimosQuadraticoTeste {
 
 		try {
 
-			String path = Principal.class.getResource("/base/education.txt").getPath();
+			String path = TCC.class.getResource("/base/15_24_desistencia.txt").getPath();
 			br = new BufferedReader(new FileReader(path));
 			int aux = 0;
 			String linha = null;
